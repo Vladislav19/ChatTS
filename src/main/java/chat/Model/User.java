@@ -15,6 +15,7 @@ public class User implements Serializable{
     private String login;
     private String pass;
     private String message;
+    private Integer port;
 
     @Id
     @Column(name = "id")
@@ -78,5 +79,15 @@ public class User implements Serializable{
         result = 31 * result + (pass != null ? pass.hashCode() : 0);
         result = 31 * result + (message != null ? message.hashCode() : 0);
         return result;
+    }
+
+    @Basic
+    @Column(name = "port")
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 }

@@ -16,6 +16,7 @@ public class Agent implements Serializable{
     private String pass;
     private String message;
     private byte isFree;
+    private Integer port;
 
     @Id
     @Column(name = "id")
@@ -91,5 +92,15 @@ public class Agent implements Serializable{
         result = 31 * result + (message != null ? message.hashCode() : 0);
         result = 31 * result + (int) isFree;
         return result;
+    }
+
+    @Basic
+    @Column(name = "port")
+    public Integer getPort() {
+        return port;
+    }
+
+    public void setPort(Integer port) {
+        this.port = port;
     }
 }
