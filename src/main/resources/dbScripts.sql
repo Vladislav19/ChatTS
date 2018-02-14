@@ -1,0 +1,16 @@
+CREATE TABLE chatdb.user
+(
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    login VARCHAR(20) NOT NULL,
+    pass VARCHAR(20) NOT NULL,
+    message VARCHAR(255)
+);
+
+CREATE TABLE chatdb.agent
+(
+    id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
+    login VARCHAR(20) NOT NULL,
+    pass VARCHAR(20) NOT NULL,
+    message VARCHAR(255),
+    isFree BOOLEAN DEFAULT true NOT NULL
+);
