@@ -2,6 +2,7 @@ package chat.client.View.UserViews;
 
 import chat.Model.User;
 
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.Scanner;
@@ -21,7 +22,7 @@ public class MainUserView {
         this.objectInputStream = objectInputStream;
     }
 
-    public void showMenuUser(){
+    public void showMenuUser() throws IOException {
         System.out.println("User menu+\n");
         System.out.println("1) Write message to agent");
         System.out.println("2) Exit");
@@ -30,7 +31,12 @@ public class MainUserView {
 
     public void Switch(String str){
         switch (str){
-            case "1":UserChatView userChatView = new UserChatView(user,objectOutputStream, objectInputStream);userChatView.showChat();
+            case "1":UserChatView userChatView = new UserChatView(user,objectOutputStream, objectInputStream);
+                try {
+                    userChatView.showChat();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
 
             case "2":System.exit(0);
         }

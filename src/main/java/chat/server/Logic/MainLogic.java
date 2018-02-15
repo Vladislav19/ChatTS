@@ -18,26 +18,13 @@ public class MainLogic {
     UserDAOImpls userDAO = new UserDAOImpls();
     AgentDAOImpl agentDAO = new AgentDAOImpl();
 
-
-    public void searchFreeAgent(User user){
+    public int searchFreeAgent(User user){
         Agent freeAgent = agentDAO.isFreeAgent();
         if(freeAgent!=null){
             agentDAO.markNotFree(freeAgent.getLogin(),freeAgent.getPass());
-            int portAgent = agentDAO.getPort(freeAgent);
-            try {
-
-                Socket socket = new Socket("127.0.0.1",portAgent);
-                ObjectInputStream objectInputStream = (ObjectInputStream) socket.getInputStream();
-                ObjectOutputStream objectOutputStream = (ObjectOutputStream)socket.getOutputStream();
-                objectOutputStream.flush();
-                objectOutputStream.writeUTF(userDAO.getMessage(user));
-                objectOutputStream.flush();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        else{
-
+            return freeAgent.getPort();
+        }else{
+            return -1;
         }
     }
 

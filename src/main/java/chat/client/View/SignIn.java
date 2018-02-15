@@ -52,8 +52,9 @@ public class SignIn {
             }
             else if(object instanceof Agent){
                 System.out.println(((Agent)object).getId()+" "+((Agent)object).getLogin());
-                ChatAgent chatAgent = new ChatAgent(objectOutputStream, objectInputStream);
+                ChatAgent chatAgent = new ChatAgent(socket.getLocalPort());
                 chatAgent.startChat();
+                clientConnection.closeConnection(socket);
             }
             else {
                 System.out.println("Not found, retype or data");

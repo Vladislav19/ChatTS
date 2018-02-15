@@ -13,18 +13,15 @@ public class ServerConnetion {
         ServerSocket srvSocket = null;
         try {
             try {
-                int i = 0; // Счётчик подключений
-                // Подключение сокета к localhost
+                int i = 0;
                 InetAddress ia = InetAddress.getByName("localhost");
                 srvSocket = new ServerSocket(port, 0, ia);
 
                 System.out.println("Server started\n\n");
 
                 while(true) {
-                    // ожидание подключения
                     Socket socket = srvSocket.accept();
                     System.err.println("Client accepted");
-                    // Стартуем обработку клиента в отдельном потоке
                     new Server().setSocket(i++, socket);
                 }
             } catch(Exception e) {

@@ -14,11 +14,13 @@ import java.io.ObjectOutputStream;
  * Created by Владислав on 14.02.2018.
  */
 public class MainController {
+
     UserDAOImpls userDAO = new UserDAOImpls();
     AgentDAOImpl agentDAO = new AgentDAOImpl();
     MainLogic logic = new MainLogic();
     ObjectInputStream objectInputStream;
     ObjectOutputStream objectOutputStream;
+
     public MainController(ObjectOutputStream objectOutputStream,ObjectInputStream objectInputStream) {
         this.objectInputStream=objectInputStream;
         this.objectOutputStream=objectOutputStream;
@@ -27,14 +29,12 @@ public class MainController {
     public void useCommand(Object object,String string) throws IOException {
 
         if(string.equals("RegUSER")){
-            System.out.println("Use command save");
             userDAO.save((User)object);
             objectOutputStream.writeUTF("Registration success");
             objectOutputStream.flush();
         }
 
         else if(string.equals("RegAGENT")){
-            System.out.println("Use command save");
             agentDAO.save((Agent) object);
             objectOutputStream.writeUTF("Registration success");
             objectOutputStream.flush();
@@ -47,7 +47,6 @@ public class MainController {
             String pass = mas[1];
             User user;Agent agent;
             int port = Integer.parseInt(mas[2]);
-            System.out.println("Use command find employee");
             if((user = userDAO.find(log,pass,port))!=null){
                 objectOutputStream.writeObject(user);
                 objectOutputStream.flush();
@@ -63,9 +62,14 @@ public class MainController {
         }
 
         else if(string.equals("SendMessage")){
-            System.out.println("Use command save message");
             userDAO.addMessage((User)object);
             logic.searchFreeAgent((User)object);
+        }
+
+        else if(string.equals("GetFreeAgentPort")){
+            int port = logic.searchFreeAgent((User)object);
+            objectOutputStream.writeInt(port);
+            objectOutputStream.flush();
         }
 
 

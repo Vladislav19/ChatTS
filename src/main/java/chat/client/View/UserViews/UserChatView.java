@@ -6,6 +6,7 @@ import chat.client.ClientConnection;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 
@@ -15,10 +16,15 @@ import java.util.Scanner;
 public class UserChatView {
 
     User user;
-
+    int port;
+    private  static final String localhost  = "127.0.0.1";
     Scanner in = new Scanner(System.in);
     ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
+
+    Socket socket = null;
+    ObjectOutputStream ous;
+    ObjectInputStream ois;
 
     public UserChatView(User user, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
         this.user = user;
@@ -26,25 +32,87 @@ public class UserChatView {
         this.objectInputStream = objectInputStream;
     }
 
-    public void showChat(){
+    public void showChat() throws IOException {
 
         System.out.println("User Chat+\n");
-        System.out.println("Type your message");
-        String message = in.nextLine();
-        user.setMessage(message);
-
         try {
             objectOutputStream.flush();
-            objectOutputStream.writeObject(user);
+            objectOutputStream.writeObject(null);
             objectOutputStream.flush();
             String str = objectInputStream.readUTF();
             System.out.println(str);
-            objectOutputStream.writeUTF("SendMessage");
+            objectOutputStream.writeUTF("GetFreeAgentPort");
             objectOutputStream.flush();
-            String response = objectInputStream.readUTF();
-        }
-        catch (IOException ex){
+            port = objectInputStream.readInt();
+            if(port==-1){
+                System.out.println("Wait a free agent");
+                Thread.sleep(100000);
+                showChat();
+            }
+            else{
+                socket = createConnectionThisAgent();
+                ois = getInStream(socket);
+                ous = getOutStream(socket);
+                ous.flush();
+            }
+
+        }catch (IOException ex){
             ex.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int i=0;
+        System.out.println("Type your message");
+        while(true) {
+            if(i!=0){
+                System.out.println(ois.readUTF());
+            }
+            String message = in.nextLine();
+            if (message.equals("Thanks")) {
+                closeConnection(socket);
+                MainUserView mainUserView = new MainUserView(user, objectOutputStream, objectInputStream);
+                mainUserView.showMenuUser();
+
+            }
+            if (message.equals("Exit")) {
+                closeConnection(socket);
+                System.exit(0);
+            }
+            ous.writeUTF(message);
+            ous.flush();
+            System.out.println(ois.readUTF());
+            i++;
+        }
+    }
+
+    public Socket createConnectionThisAgent(){
+        try {
+            InetAddress ipAddress = InetAddress.getByName(localhost);
+            socket = new Socket(ipAddress, port);
+            System.out.println("The connection this Agent is established.");
+
+        }
+        catch (Exception ex){
+            ex.printStackTrace();
+        }
+        return  socket;
+    }
+
+    public ObjectOutputStream getOutStream(Socket socket) throws IOException {
+        return new  ObjectOutputStream(socket.getOutputStream());
+    }
+
+    public ObjectInputStream getInStream(Socket socket) throws IOException {
+        return new  ObjectInputStream(socket.getInputStream());
+    }
+
+    public void closeConnection(Socket socket)throws IOException{
+        try {
+            if (socket != null)
+                socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

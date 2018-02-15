@@ -14,21 +14,8 @@ public class ClientConnection {
     public Socket getConnection(){
         Socket socket = null;
         try {
-            System.out.println("Welcome to Client side\n" +
-                    "Connecting to the server\n\t" +
-                    "(IP address " + localhost +
-                    ", port " + serverPort + ")");
             InetAddress ipAddress = InetAddress.getByName(localhost);
             socket = new Socket(ipAddress, serverPort);
-            System.out.println("The connection is established.");
-
-            System.out.println(
-                    "\tLocalPort = " +
-                            socket.getLocalPort() +
-                            "\n\tInetAddress.HostAddress = " +
-                            socket.getInetAddress().getHostAddress() +
-                            "\n\tReceiveBufferSize (SO_RCVBUF) = " +
-                            socket.getReceiveBufferSize());
         }
         catch (Exception ex){
             ex.printStackTrace();

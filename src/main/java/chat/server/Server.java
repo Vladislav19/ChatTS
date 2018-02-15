@@ -8,16 +8,12 @@ import java.net.*;
 
 public class Server extends Thread
 {
-    private static final int port  = 6667; // открываемый порт сервера
-    private String TEMPL_CONN = "The client '%d' closed the connection";
-
     private  Socket socket;
     private  int    num;
 
     public Server() {}
     public void setSocket(int num, Socket socket)
     {
-        // Определение значений
         this.num    = num;
         this.socket = socket;
         setDaemon(true);
