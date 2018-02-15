@@ -12,6 +12,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+import org.apache.log4j.Logger;
 
 /**
  * Created by Владислав on 14.02.2018.
@@ -23,7 +24,7 @@ public class SignIn {
     Socket socket = null;
     ObjectOutputStream objectOutputStream = null;
     ObjectInputStream objectInputStream = null;
-
+    private static final Logger log = Logger.getLogger(SignIn.class);
     public void doSignIn(){
         System.out.println("");
         System.out.println("Type your login");
@@ -46,12 +47,12 @@ public class SignIn {
             Object object = objectInputStream.readObject();
 
             if(object instanceof User){
-                System.out.println(((User)object).getId()+" "+((User)object).getLogin());
+                log.info("User: "+ ((User) object).getLogin() +" sign in system");
                 MainUserView mainUserView = new MainUserView((User)object,objectOutputStream, objectInputStream);
                 mainUserView.showMenuUser();
             }
             else if(object instanceof Agent){
-                System.out.println(((Agent)object).getId()+" "+((Agent)object).getLogin());
+                log.info("Agent: "+ ((Agent) object).getLogin() +" sign in system");
                 ChatAgent chatAgent = new ChatAgent(socket.getLocalPort());
                 chatAgent.startChat();
                 clientConnection.closeConnection(socket);

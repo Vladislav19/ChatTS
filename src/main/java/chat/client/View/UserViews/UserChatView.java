@@ -8,7 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.Scanner;import org.apache.log4j.Logger;
 
 /**
  * Created by Владислав on 14.02.2018.
@@ -21,7 +21,7 @@ public class UserChatView {
     Scanner in = new Scanner(System.in);
     ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
-
+    private static final Logger log = Logger.getLogger(UserChatView.class);
     Socket socket = null;
     ObjectOutputStream ous;
     ObjectInputStream ois;
@@ -54,6 +54,7 @@ public class UserChatView {
                 ois = getInStream(socket);
                 ous = getOutStream(socket);
                 ous.flush();
+                log.info("User "+ user.getLogin()+" start chat");
             }
 
         }catch (IOException ex){
@@ -71,11 +72,13 @@ public class UserChatView {
             String message = in.nextLine();
             if (message.equals("Thanks")) {
                 closeConnection(socket);
+                log.info("User "+ user.getLogin()+" end chat");
                 MainUserView mainUserView = new MainUserView(user, objectOutputStream, objectInputStream);
                 mainUserView.showMenuUser();
 
             }
             if (message.equals("Exit")) {
+                log.info("User "+ user.getLogin()+" end chat");
                 closeConnection(socket);
                 System.exit(0);
             }
