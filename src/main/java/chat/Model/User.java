@@ -1,9 +1,6 @@
 package chat.Model;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -16,6 +13,7 @@ public class User implements Serializable{
     private String pass;
     private String message;
     private Integer port;
+    private String ip;
 
     @Id
     @Column(name = "id")
@@ -67,9 +65,7 @@ public class User implements Serializable{
         if (id != user.id) return false;
         if (login != null ? !login.equals(user.login) : user.login != null) return false;
         if (pass != null ? !pass.equals(user.pass) : user.pass != null) return false;
-        if (message != null ? !message.equals(user.message) : user.message != null) return false;
-
-        return true;
+        return message != null ? message.equals(user.message) : user.message == null;
     }
 
     @Override
@@ -89,5 +85,15 @@ public class User implements Serializable{
 
     public void setPort(Integer port) {
         this.port = port;
+    }
+
+    @Basic
+    @Column(name = "ip")
+    public String getIp() {
+        return ip;
+    }
+
+    public void setIp(String ip) {
+        this.ip = ip;
     }
 }

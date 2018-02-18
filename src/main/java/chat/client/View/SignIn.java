@@ -2,7 +2,6 @@ package chat.client.View;
 
 import chat.Model.Agent;
 import chat.Model.User;
-import chat.client.Client;
 import chat.client.ClientConnection;
 import chat.client.View.AgentView.ChatAgent;
 import chat.client.View.UserViews.MainUserView;
@@ -12,6 +11,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 import java.util.Scanner;
+
+import org.apache.commons.codec.digest.DigestUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -25,12 +26,15 @@ public class SignIn {
     ObjectOutputStream objectOutputStream = null;
     ObjectInputStream objectInputStream = null;
     private static final Logger log = Logger.getLogger(SignIn.class);
+
     public void doSignIn(){
         System.out.println("");
         System.out.println("Type your login");
         String login = in.nextLine();
         System.out.println("Type your password");
-        String password = in.nextLine();
+        String pass = in.nextLine();
+        String md5Hex = DigestUtils.md5Hex(pass);
+
 
         try {
             clientConnection  = new ClientConnection();
@@ -38,7 +42,7 @@ public class SignIn {
             objectOutputStream = clientConnection.getOutStream(socket);
             objectOutputStream.flush();
             objectInputStream = clientConnection.getInStream(socket);
-            objectOutputStream.writeObject(login+" "+password+" "+socket.getLocalPort());
+            objectOutputStream.writeObject(login+" "+md5Hex+" "+socket.getLocalPort()+" "+socket.getInetAddress());
             objectOutputStream.flush();
             String str = objectInputStream.readUTF();
             System.out.println(str);

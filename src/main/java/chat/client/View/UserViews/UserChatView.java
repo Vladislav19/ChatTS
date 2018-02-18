@@ -1,7 +1,6 @@
 package chat.client.View.UserViews;
 
 import chat.Model.User;
-import chat.client.ClientConnection;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

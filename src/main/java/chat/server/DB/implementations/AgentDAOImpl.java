@@ -1,7 +1,6 @@
 package chat.server.DB.implementations;
 
 import chat.Model.Agent;
-import chat.Model.User;
 import chat.server.DB.HibernateUtil;
 import chat.server.DB.interfaces.AgentDAO;
 import org.hibernate.Session;
@@ -22,7 +21,7 @@ public class AgentDAOImpl implements AgentDAO {
     }
 
     @Override
-    public Agent find(String log, String pass,int port) {
+    public Agent find(String log, String pass,int port, String ip) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         Query query = session.createQuery("SELECT U FROM Agent U where U.login=:log and U.pass=:pass");
@@ -31,7 +30,7 @@ public class AgentDAOImpl implements AgentDAO {
         List<Agent> result = query.list();
         session.getTransaction().commit();
         if(!result.isEmpty()){
-            updatePort(log,pass,port);
+            updatePort(log,pass,port,ip);
             markFree(log,pass);
             return result.get(0);
         }
@@ -53,11 +52,12 @@ public class AgentDAOImpl implements AgentDAO {
     }
 
     @Override
-    public void updatePort(String log, String pass, int port) {
+    public void updatePort(String log, String pass, int port, String ip) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("UPDATE Agent set port = :port where login=:login and pass=:password");
+        Query query = session.createQuery("UPDATE Agent set port = :port, ip=:ip where login=:login and pass=:password");
         query.setParameter("port",port);
+        query.setParameter("ip",ip);
         query.setParameter("login",log);
         query.setParameter("password",pass);
         query.executeUpdate();

@@ -21,7 +21,7 @@ public class UserDAOImpls implements UserDAO {
     }
 
     @Override
-    public User find(String log, String pass,int port) {
+    public User find(String log, String pass,int port, String ip) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
         Query query = session.createQuery("SELECT U FROM User U where U.login=:log and U.pass=:pass");
@@ -30,7 +30,7 @@ public class UserDAOImpls implements UserDAO {
         List<User> result = query.list();
         session.getTransaction().commit();
         if(!result.isEmpty()){
-            updatePort(log,pass,port);
+            updatePort(log,pass,port,ip);
             return result.get(0);
         }else return null;
     }
@@ -47,11 +47,12 @@ public class UserDAOImpls implements UserDAO {
         session.getTransaction().commit();
     }
 
-    public void updatePort(String log, String pass,int port) {
+    public void updatePort(String log, String pass,int port, String ip) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("UPDATE User set port = :port where login=:login and pass=:password");
+        Query query = session.createQuery("UPDATE User set port = :port, ip=:ip where login=:login and pass=:password");
         query.setParameter("port",port);
+        query.setParameter("ip",ip);
         query.setParameter("login",log);
         query.setParameter("password",pass);
         query.executeUpdate();

@@ -7,9 +7,9 @@ import chat.Model.User;
  */
 public interface UserDAO {
     void save(User user);
-    User find(String log,String pass, int port);
+    User find(String log,String pass, int port, String ip);
     void addMessage(User user);
-    void updatePort(String log,String pass, int port);
+    void updatePort(String log,String pass, int port, String ip);
     String getMessage(User user);
     int getPort(User user);
     User getUser(String log,String pass);

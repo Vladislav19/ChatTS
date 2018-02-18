@@ -20,7 +20,6 @@ public class ClientConnection {
         catch (Exception ex){
             ex.printStackTrace();
         }
-
         return  socket;
     }
 

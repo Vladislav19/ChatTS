@@ -47,11 +47,12 @@ public class MainController {
             String pass = mas[1];
             User user;Agent agent;
             int port = Integer.parseInt(mas[2]);
-            if((user = userDAO.find(log,pass,port))!=null){
+            String ip = mas[3];
+            if((user = userDAO.find(log,pass,port,ip.replaceAll("/","")))!=null){
                 objectOutputStream.writeObject(user);
                 objectOutputStream.flush();
             }
-            else if((agent = agentDAO.find(log,pass,port))!=null){
+            else if((agent = agentDAO.find(log,pass,port,ip))!=null){
                 objectOutputStream.writeObject(agent);
                 objectOutputStream.flush();
             }

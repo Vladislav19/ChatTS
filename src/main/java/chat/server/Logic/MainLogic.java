@@ -5,11 +5,6 @@ import chat.Model.User;
 import chat.server.DB.implementations.AgentDAOImpl;
 import chat.server.DB.implementations.UserDAOImpls;
 
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.net.Socket;
-
 /**
  * Created by Владислав on 14.02.2018.
  */

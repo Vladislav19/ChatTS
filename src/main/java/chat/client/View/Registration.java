@@ -4,8 +4,10 @@ import chat.Model.Agent;
 import chat.Model.User;
 import chat.client.Client;
 import chat.client.ClientConnection;
+import org.apache.commons.codec.digest.DigestUtils;
 
 
+import java.io.Console;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -21,6 +23,7 @@ public class Registration {
     Socket socket = null;
     ObjectOutputStream objectOutputStream = null;
     ObjectInputStream objectInputStream = null;
+    String pass;String md5Hex;
 
     public void doRegistr() throws IOException {
         System.out.println("Type your role (USER or AGENT)");
@@ -35,7 +38,9 @@ public class Registration {
                 System.out.println("Type your login");
                 user.setLogin(in.nextLine());
                 System.out.println("Type your password");
-                user.setPass(in.nextLine());
+                pass = in.nextLine();
+                md5Hex = DigestUtils.md5Hex(pass);
+                user.setPass(md5Hex);
                 sendUserData(user);
                 break;
 
@@ -44,7 +49,9 @@ public class Registration {
                 System.out.println("Type your login");
                 agent.setLogin(in.nextLine());
                 System.out.println("Type your password");
-                agent.setPass(in.nextLine());
+                pass = in.nextLine();
+                md5Hex = DigestUtils.md5Hex(pass);
+                agent.setPass(md5Hex);
                 sendAgentData(agent);
                 break;
             default:
