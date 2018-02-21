@@ -1,6 +1,8 @@
 package chat.client.View.AgentView;
 
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -11,6 +13,9 @@ import java.net.Socket;
 public class ChatAgent {
 
     int port;
+    ObjectOutputStream objectOutputStream;
+    ObjectInputStream objectInputStream;
+
     public ChatAgent(int port) {
         this.port = port;
     }
@@ -33,7 +38,7 @@ public class ChatAgent {
                     new Server().setSocket(socket);
                 }
             } catch(Exception e) {
-                System.out.println("Exception : " + e);
+                e.printStackTrace();
             }
         }
         finally {

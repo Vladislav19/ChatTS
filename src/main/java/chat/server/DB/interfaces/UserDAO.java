@@ -2,15 +2,18 @@ package chat.server.DB.interfaces;
 
 import chat.Model.User;
 
+import java.sql.SQLException;
+
 /**
  * Created by Владислав on 14.02.2018.
  */
 public interface UserDAO {
-    void save(User user);
+    void save(User user) throws SQLException;
     User find(String log,String pass, int port, String ip);
-    void addMessage(User user);
-    void updatePort(String log,String pass, int port, String ip);
-    String getMessage(User user);
-    int getPort(User user);
+    User findFreeAgent();
+    void markFree(String log, String pass,int port, String ip);
+    void markNotFree(String log, String pass);
+    void markNotFreeByPort(int port);
+    void markFreeByPort(int port);
     User getUser(String log,String pass);
 }

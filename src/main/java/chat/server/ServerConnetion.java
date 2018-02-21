@@ -8,6 +8,11 @@ import java.net.Socket;
 public class ServerConnetion {
 
     private static final int port  = 6667;
+    int db;
+
+    public ServerConnetion(int db) {
+        this.db = db;
+    }
 
     public void startServer(){
         ServerSocket srvSocket = null;
@@ -22,7 +27,7 @@ public class ServerConnetion {
                 while(true) {
                     Socket socket = srvSocket.accept();
                     System.err.println("Client accepted");
-                    new Server().setSocket(i++, socket);
+                    new Server(db).setSocket(i++, socket);
                 }
             } catch(Exception e) {
                 System.out.println("Exception : " + e);

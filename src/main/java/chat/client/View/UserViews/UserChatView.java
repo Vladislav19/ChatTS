@@ -5,6 +5,7 @@ import chat.Model.User;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
+import java.net.ConnectException;
 import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;import org.apache.log4j.Logger;
@@ -35,17 +36,14 @@ public class UserChatView {
 
         System.out.println("User Chat+\n");
         try {
-            objectOutputStream.flush();
             objectOutputStream.writeObject(null);
             objectOutputStream.flush();
-            String str = objectInputStream.readUTF();
-            System.out.println(str);
             objectOutputStream.writeUTF("GetFreeAgentPort");
             objectOutputStream.flush();
             port = objectInputStream.readInt();
             if(port==-1){
                 System.out.println("Wait a free agent");
-                Thread.sleep(100000);
+                Thread.sleep(1000);
                 showChat();
             }
             else{
@@ -94,6 +92,17 @@ public class UserChatView {
             socket = new Socket(ipAddress, port);
             System.out.println("The connection this Agent is established.");
 
+        }
+        catch (ConnectException e){
+            try {
+                objectOutputStream.writeObject(port);
+                objectOutputStream.flush();
+                objectOutputStream.writeUTF("AgentIsNotActive");
+                objectOutputStream.flush();
+                showChat();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
         }
         catch (Exception ex){
             ex.printStackTrace();

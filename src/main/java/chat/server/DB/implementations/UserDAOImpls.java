@@ -30,28 +30,17 @@ public class UserDAOImpls implements UserDAO {
         List<User> result = query.list();
         session.getTransaction().commit();
         if(!result.isEmpty()){
-            updatePort(log,pass,port,ip);
+            markFree(log,pass,port,ip);
             return result.get(0);
         }else return null;
     }
 
-    @Override
-    public void addMessage(User user) {
+    public void markFree(String log, String pass,int port, String ip){
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Query query = session.createQuery("UPDATE User set message = :message where login=:login and pass=:password");
-        query.setParameter("message",user.getMessage());
-        query.setParameter("login",user.getLogin());
-        query.setParameter("password",user.getPass());
-        query.executeUpdate();
-        session.getTransaction().commit();
-    }
-
-    public void updatePort(String log, String pass,int port, String ip) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("UPDATE User set port = :port, ip=:ip where login=:login and pass=:password");
+        Query query = session.createQuery("UPDATE User set port = :port, isOnline = :online, ip=:ip where login=:login and pass=:password");
         query.setParameter("port",port);
+        query.setParameter("online",1);
         query.setParameter("ip",ip);
         query.setParameter("login",log);
         query.setParameter("password",pass);
@@ -59,29 +48,6 @@ public class UserDAOImpls implements UserDAO {
         session.getTransaction().commit();
     }
 
-    @Override
-    public String getMessage(User user) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("SELECT U.message FROM User U where U.login=:log and U.pass=:pass");
-        query.setParameter("log",user.getLogin());
-        query.setParameter("pass",user.getPass());
-        List<String> result = query.list();
-        session.getTransaction().commit();
-        return result.get(0);
-    }
-
-    @Override
-    public int getPort(User user) {
-        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
-        session.beginTransaction();
-        Query query = session.createQuery("SELECT U.port FROM User U where U.login=:log and U.pass=:pass");
-        query.setParameter("log",user.getLogin());
-        query.setParameter("pass",user.getPass());
-        List<Integer> result = query.list();
-        session.getTransaction().commit();
-        return result.get(0);
-    }
 
     @Override
     public User getUser(String log, String pass) {
@@ -93,5 +59,49 @@ public class UserDAOImpls implements UserDAO {
         List<User> result = query.list();
         session.getTransaction().commit();
         return result.get(0);
+    }
+
+    public User findFreeAgent(){
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("SELECT U FROM User U where U.role=:role and U.isOnline=:online");
+        query.setParameter("role","AGENT");
+        query.setParameter("online",1);
+        List<User> result = query.list();
+        session.getTransaction().commit();
+        if (!result.isEmpty()){
+            return result.get(0);
+        }
+        else return null;
+    }
+    public void markNotFree(String log, String pass){
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("UPDATE User set  isOnline = :online where  login=:login and pass=:password");
+        query.setParameter("online",0);
+        query.setParameter("login",log);
+        query.setParameter("password",pass);
+        query.executeUpdate();
+        session.getTransaction().commit();
+    }
+    public void markNotFreeByPort(int port){
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("UPDATE User set isOnline = :online where  port=:port");
+        query.setParameter("online",0);
+        query.setParameter("port",port);
+        query.executeUpdate();
+        session.getTransaction().commit();
+    }
+
+    @Override
+    public void markFreeByPort(int port) {
+        Session session = HibernateUtil.getSessionFactory().getCurrentSession();
+        session.beginTransaction();
+        Query query = session.createQuery("UPDATE User set isOnline = :online where  port=:port");
+        query.setParameter("online",1);
+        query.setParameter("port",port);
+        query.executeUpdate();
+        session.getTransaction().commit();
     }
 }

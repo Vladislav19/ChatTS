@@ -11,9 +11,14 @@ public class User implements Serializable{
     private int id;
     private String login;
     private String pass;
-    private String message;
     private Integer port;
     private String ip;
+    private String role;
+    private int isOnline;
+
+    public void setIsOnline(int isOnline) {
+        this.isOnline = isOnline;
+    }
 
     @Id
     @Column(name = "id")
@@ -45,15 +50,6 @@ public class User implements Serializable{
         this.pass = pass;
     }
 
-    @Basic
-    @Column(name = "message")
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 
     @Override
     public boolean equals(Object o) {
@@ -63,17 +59,20 @@ public class User implements Serializable{
         User user = (User) o;
 
         if (id != user.id) return false;
-        if (login != null ? !login.equals(user.login) : user.login != null) return false;
-        if (pass != null ? !pass.equals(user.pass) : user.pass != null) return false;
-        return message != null ? message.equals(user.message) : user.message == null;
+        if (isOnline != user.isOnline) return false;
+        if (!login.equals(user.login)) return false;
+        if (!pass.equals(user.pass)) return false;
+        if (!port.equals(user.port)) return false;
+        if (!ip.equals(user.ip)) return false;
+        return role.equals(user.role);
     }
+
 
     @Override
     public int hashCode() {
         int result = id;
         result = 31 * result + (login != null ? login.hashCode() : 0);
         result = 31 * result + (pass != null ? pass.hashCode() : 0);
-        result = 31 * result + (message != null ? message.hashCode() : 0);
         return result;
     }
 
@@ -95,5 +94,25 @@ public class User implements Serializable{
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    @Basic
+    @Column(name = "role")
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
+
+    @Basic
+    @Column(name = "isOnline")
+    public int getIsOnline() {
+        return isOnline;
+    }
+
+    public void setIsOnline(byte isOnline) {
+        this.isOnline = isOnline;
     }
 }

@@ -1,6 +1,5 @@
 package chat.client.View;
 
-import chat.Model.Agent;
 import chat.Model.User;
 import chat.client.ClientConnection;
 import chat.client.View.AgentView.ChatAgent;
@@ -34,8 +33,6 @@ public class SignIn {
         System.out.println("Type your password");
         String pass = in.nextLine();
         String md5Hex = DigestUtils.md5Hex(pass);
-
-
         try {
             clientConnection  = new ClientConnection();
             socket = clientConnection.getConnection();
@@ -44,26 +41,23 @@ public class SignIn {
             objectInputStream = clientConnection.getInStream(socket);
             objectOutputStream.writeObject(login+" "+md5Hex+" "+socket.getLocalPort()+" "+socket.getInetAddress());
             objectOutputStream.flush();
-            String str = objectInputStream.readUTF();
-            System.out.println(str);
             objectOutputStream.writeUTF("Autorisation");
             objectOutputStream.flush();
             Object object = objectInputStream.readObject();
 
-            if(object instanceof User){
+            if(object==null){
+                System.out.println("Login or password have mistake. Retype please");
+                doSignIn();
+            }
+            else if(((User)object).getRole().equals("USER")){
                 log.info("User: "+ ((User) object).getLogin() +" sign in system");
                 MainUserView mainUserView = new MainUserView((User)object,objectOutputStream, objectInputStream);
                 mainUserView.showMenuUser();
             }
-            else if(object instanceof Agent){
-                log.info("Agent: "+ ((Agent) object).getLogin() +" sign in system");
+            else if(((User)object).getRole().equals("AGENT")){
+                log.info("Agent: "+ ((User) object).getLogin() +" sign in system");
                 ChatAgent chatAgent = new ChatAgent(socket.getLocalPort());
                 chatAgent.startChat();
-                clientConnection.closeConnection(socket);
-            }
-            else {
-                System.out.println("Not found, retype or data");
-                doSignIn();
             }
         } catch (IOException e) {
             e.printStackTrace();
