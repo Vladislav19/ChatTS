@@ -95,7 +95,6 @@ public class UserChatView {
             InetAddress ipAddress = InetAddress.getByName(ip);
             socket = new Socket(ipAddress, port);
             System.out.println("The connection this Agent is established.");
-
         }
         catch (ConnectException e){
             try {

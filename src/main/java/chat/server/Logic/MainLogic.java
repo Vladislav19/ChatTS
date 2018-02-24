@@ -21,7 +21,7 @@ public class MainLogic {
             String result = freeAgent.getIp()+" "+freeAgent.getPort();
             return result;
         }else{
-            return freeAgent.getIp()+" "+"-1";
+            return 0+" "+"-1";
         }
     }
 
