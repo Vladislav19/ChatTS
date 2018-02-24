@@ -1,4 +1,4 @@
-package chat.server.DB.H2;
+package chat.server.DB.implementations;
 
 import chat.Model.User;
 import chat.server.DB.interfaces.UserDAO;
@@ -17,9 +17,9 @@ public class UserDAOImplsH2 implements UserDAO {
     private static final String username = "test";
     private static final String password = "test";
 
-    private static final String tableScript = "create table users"+
+    private static final String tableScript = "create table user"+
             "("+
-            "    id int auto_increment"+
+            " id int auto_increment"+
             " primary key,"+
             " login varchar(20) not null,"+
             " pass varchar(100) not null,"+
@@ -67,7 +67,7 @@ public class UserDAOImplsH2 implements UserDAO {
         Connection connection = initConnection();
         PreparedStatement statement = null;
         try {
-            statement = connection.prepareStatement("INSERT INTO users (login, pass, role, isOnline) VALUES (?,?,?,?)");
+            statement = connection.prepareStatement("INSERT INTO user (login, pass, role, isOnline) VALUES (?,?,?,?)");
             statement.setString(1,user.getLogin());
             statement.setString(2,user.getPass());
             statement.setString(3,user.getRole());
@@ -85,7 +85,7 @@ public class UserDAOImplsH2 implements UserDAO {
         List<User> users = new ArrayList<>();
         try {
             Connection connection = initConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE login=? and pass=? ");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM user WHERE login=? and pass=? ");
             statement.setString(1,log);
             statement.setString(2,pass);
             ResultSet resultSet = statement.executeQuery();
@@ -116,7 +116,7 @@ public class UserDAOImplsH2 implements UserDAO {
         List<User> users = new ArrayList<>();
         try {
             Connection connection = initConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE isOnline = 1 ");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM user WHERE isOnline = 1 ");
             ResultSet resultSet = statement.executeQuery();
             while (resultSet.next()){
                 user = new User();
@@ -142,7 +142,7 @@ public class UserDAOImplsH2 implements UserDAO {
     public void markFree(String log, String pass, int port, String ip) {
         try{
             Connection connection = initConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET port = ?, isOnline = 1, ip=? where login=? and pass=?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE user SET port = ?, isOnline = 1, ip=? where login=? and pass=?");
             statement.setInt(1,port);
             statement.setString(2,ip);
             statement.setString(3,log);
@@ -157,7 +157,7 @@ public class UserDAOImplsH2 implements UserDAO {
     public void markNotFree(String log, String pass) {
         try{
             Connection connection = initConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET isOnline = 0 where login=? and pass=?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE user SET isOnline = 0 where login=? and pass=?");
             statement.setString(1,log);
             statement.setString(2,pass);
             statement.executeUpdate();
@@ -170,7 +170,7 @@ public class UserDAOImplsH2 implements UserDAO {
     public void markNotFreeByPort(int port) {
         try{
             Connection connection = initConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET isOnline = 0 where port = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE user SET isOnline = 0 where port = ?");
             statement.setInt(1,port);
             statement.executeUpdate();
         }catch (Exception ex){
@@ -182,7 +182,7 @@ public class UserDAOImplsH2 implements UserDAO {
     public void markFreeByPort(int port) {
         try{
             Connection connection = initConnection();
-            PreparedStatement statement = connection.prepareStatement("UPDATE users SET isOnline = 1 where port = ?");
+            PreparedStatement statement = connection.prepareStatement("UPDATE user SET isOnline = 1 where port = ?");
             statement.setInt(1,port);
             statement.executeUpdate();
         }catch (Exception ex){
@@ -196,7 +196,7 @@ public class UserDAOImplsH2 implements UserDAO {
         List<User> users = new ArrayList<>();
         try {
             Connection connection = initConnection();
-            PreparedStatement statement = connection.prepareStatement("SELECT * FROM users WHERE login=? and pass=? ");
+            PreparedStatement statement = connection.prepareStatement("SELECT * FROM user WHERE login=? and pass=? ");
             statement.setString(1,log);
             statement.setString(2,pass);
             ResultSet resultSet = statement.executeQuery();

@@ -10,9 +10,3 @@ create table user
 	isOnline tinyint(1) default '0' not null
 )
 ;
-
-
-
-
-
-

@@ -1,8 +1,6 @@
 package chat.server.Logic;
 
 import chat.Model.User;
-import chat.server.DB.H2.UserDAOImplsH2;
-import chat.server.DB.implementations.UserDAOImpls;
 import chat.server.DB.interfaces.UserDAO;
 
 /**
@@ -11,25 +9,19 @@ import chat.server.DB.interfaces.UserDAO;
 public class MainLogic {
 
     UserDAO userDAO ;
-    int db;
 
-    public MainLogic(int db) {
-        this.db = db;
+    public MainLogic(UserDAO userDAO) {
+        this.userDAO = userDAO;
     }
 
-    public int searchFreeAgent(User user){
-        if(db==1){
-            userDAO = new UserDAOImplsH2();
-        }
-        if(db==2){
-            userDAO = new UserDAOImpls();
-        }
+    public String searchFreeAgent(User user){
         User freeAgent = userDAO.findFreeAgent();
         if(freeAgent!=null){
             userDAO.markNotFree(freeAgent.getLogin(),freeAgent.getPass());
-            return freeAgent.getPort();
+            String result = freeAgent.getIp()+" "+freeAgent.getPort();
+            return result;
         }else{
-            return -1;
+            return freeAgent.getIp()+" "+"-1";
         }
     }
 

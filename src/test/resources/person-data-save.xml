@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<dataset>
+    <user id="1" login="hudikv" pass="573156869a0fece12fda7ed6ada2f28a" role="USER" port="34554" ip="127.0.0.1" isOnline="1"/>
+    <user id="2" login="agent" pass="b33aed8f3134996703dc39f9a7c95783" role="AGENT" port="35124" ip="127.0.0.1" isOnline="0"/>
+    <user id="3" login="Ragneda" pass="5d93ceb70e2bf5daa84ec3d0cd2c731a" role="USER" isOnline="0"/>
+</dataset>

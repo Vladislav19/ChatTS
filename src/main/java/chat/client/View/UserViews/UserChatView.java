@@ -16,8 +16,8 @@ import java.util.Scanner;import org.apache.log4j.Logger;
 public class UserChatView {
 
     User user;
-    int port;
-    private  static final String localhost  = "127.0.0.1";
+    int port;String ip;
+    String address;
     Scanner in = new Scanner(System.in);
     ObjectOutputStream objectOutputStream;
     ObjectInputStream objectInputStream;
@@ -40,7 +40,11 @@ public class UserChatView {
             objectOutputStream.flush();
             objectOutputStream.writeUTF("GetFreeAgentPort");
             objectOutputStream.flush();
-            port = objectInputStream.readInt();
+            address = objectInputStream.readUTF();
+            String[] mas = address.split(" ");
+            port = Integer.parseInt(mas[1]);
+            ip = mas[0];
+
             if(port==-1){
                 System.out.println("Wait a free agent");
                 Thread.sleep(1000);
@@ -88,7 +92,7 @@ public class UserChatView {
 
     public Socket createConnectionThisAgent(){
         try {
-            InetAddress ipAddress = InetAddress.getByName(localhost);
+            InetAddress ipAddress = InetAddress.getByName(ip);
             socket = new Socket(ipAddress, port);
             System.out.println("The connection this Agent is established.");
 

@@ -1,10 +1,10 @@
 package chat.server.Controllers;
 
-import chat.Model.User;
-import chat.server.DB.H2.UserDAOImplsH2;
+import chat.server.Controllers.Command.Impl.*;
+import chat.server.Controllers.Command.Interface.Command;
+import chat.server.DB.implementations.UserDAOImplsH2;
 import chat.server.DB.implementations.UserDAOImpls;
 import chat.server.DB.interfaces.UserDAO;
-import chat.server.Logic.MainLogic;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -17,7 +17,7 @@ import java.sql.SQLException;
 public class MainController {
 
     UserDAO userDAO = null;
-
+    Command command;
     ObjectInputStream objectInputStream;
     ObjectOutputStream objectOutputStream;
     int db;
@@ -28,59 +28,39 @@ public class MainController {
         this.objectOutputStream=objectOutputStream;
     }
 
-    public void useCommand(Object object,String string) throws IOException {
-        if(db==1){
-            userDAO = new UserDAOImplsH2();
-        }
-        if(db==2){
-            userDAO = new UserDAOImpls();
-        }
+    public void useCommand(Object object,String string) throws IOException, SQLException {
+        int i=0;
+        if(i==0) {
+            if (db == 1) {
+                userDAO = new UserDAOImplsH2();
+            } else {
+                userDAO = new UserDAOImpls();
+            }
+        }i++;
 
         if(string.equals("Registration")){
-            try {
-                userDAO.save((User)object);
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            objectOutputStream.writeUTF("Registration success");
-            objectOutputStream.flush();
+            command = new RegistrCommand(object,userDAO,objectInputStream,objectOutputStream);
+            command.execute();
         }
 
         else if(string.equals("Autorisation")){
-            String str = (String)object;
-            String[] mas = str.split(" ");
-            String log = mas[0];
-            String pass = mas[1];
-            User user;
-            int port = Integer.parseInt(mas[2]);
-            String ip = mas[3];
-            if((user = userDAO.find(log,pass,port,ip.replaceAll("/","")))!=null){
-                objectOutputStream.writeObject(user);
-                objectOutputStream.flush();
-            }
-            else {
-                objectOutputStream.writeObject(null);
-                objectOutputStream.flush();
-            }
+            command = new AutorisationCommand(object,userDAO,objectInputStream,objectOutputStream);
+            command.execute();
         }
 
         else if(string.equals("GetFreeAgentPort")){
-            MainLogic logic = new MainLogic(db);
-            int port = logic.searchFreeAgent((User)object);
-            objectOutputStream.writeInt(port);
-            objectOutputStream.flush();
+            command = new GetFreeAgentPortCommand(object,userDAO,objectInputStream,objectOutputStream);
+            command.execute();
         }
 
         else if(string.equals("AgentIsNotActive")){
-            int port = (Integer)object;
-            userDAO.markNotFreeByPort(port);
+            command = new MarkNotFreeCommand(object,userDAO,objectInputStream,objectOutputStream);
+            command.execute();
         }
 
         else if(string.equals("MarkFree")){
-            int port = (Integer)object;
-            userDAO.markFreeByPort(port);
+            command = new MarkFreeCommand(object,userDAO,objectInputStream,objectOutputStream);
+            command.execute();
         }
-
-
     }
 }
