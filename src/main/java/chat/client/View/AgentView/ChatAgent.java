@@ -38,7 +38,6 @@ public class ChatAgent {
                     new Server().setSocket(socket);
                 }
             } catch(Exception e) {
-                e.printStackTrace();
             }
         }
         finally {
@@ -46,7 +45,6 @@ public class ChatAgent {
                 if (srvSocket != null)
                     srvSocket.close();
             } catch (IOException e) {
-                e.printStackTrace();
             }
         }
     }

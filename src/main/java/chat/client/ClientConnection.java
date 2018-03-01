@@ -18,7 +18,6 @@ public class ClientConnection {
             socket = new Socket(ipAddress, serverPort);
         }
         catch (Exception ex){
-            ex.printStackTrace();
         }
         return  socket;
     }
@@ -36,7 +35,6 @@ public class ClientConnection {
             if (socket != null)
                 socket.close();
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

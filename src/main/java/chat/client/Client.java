@@ -22,7 +22,6 @@ public class Client
         try {
             trace(in.nextLine());
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 

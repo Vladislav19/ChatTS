@@ -63,7 +63,6 @@ public class Registration {
             clientConnection.closeConnection(socket);
             Client.menu();
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }

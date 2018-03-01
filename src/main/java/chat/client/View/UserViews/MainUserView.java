@@ -35,7 +35,6 @@ public class MainUserView {
                 try {
                     userChatView.showChat();
                 } catch (IOException e) {
-                    e.printStackTrace();
                 }
 
             case "2":System.exit(0);

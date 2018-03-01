@@ -25,6 +25,7 @@ public class UserChatView {
     Socket socket = null;
     ObjectOutputStream ous;
     ObjectInputStream ois;
+    int i=0;int j=0;
 
     public UserChatView(User user, ObjectOutputStream objectOutputStream, ObjectInputStream objectInputStream) {
         this.user = user;
@@ -33,8 +34,9 @@ public class UserChatView {
     }
 
     public void showChat() throws IOException {
-
-        System.out.println("User Chat+\n");
+        if(j==0){
+            System.out.println("User Chat+\n");
+        }
         try {
             objectOutputStream.writeObject(null);
             objectOutputStream.flush();
@@ -46,7 +48,8 @@ public class UserChatView {
             ip = mas[0];
 
             if(port==-1){
-                System.out.println("Wait a free agent");
+                if(j==0){
+                System.out.println("Wait a free agent");}j++;
                 Thread.sleep(1000);
                 showChat();
             }
@@ -59,32 +62,38 @@ public class UserChatView {
             }
 
         }catch (IOException ex){
-            ex.printStackTrace();
         } catch (InterruptedException e) {
-            e.printStackTrace();
         }
 
-        int i=0;
+        int i=0;StringBuilder mes;
         System.out.println("Type your message");
+        System.out.println("Please when you end type u things, type ;");
         while(true) {
             if(i!=0){
                 System.out.println(ois.readUTF());
             }
-            String message = in.nextLine();
-            if (message.equals("Thanks")) {
+            mes= new StringBuilder();
+            while (true){
+                mes.append(in.nextLine()+"\n");
+                if(mes.charAt(mes.length()-2)==';'){
+                    break;
+                }
+            }
+            if (mes.equals("thanks;")) {
                 closeConnection(socket);
                 log.info("User "+ user.getLogin()+" end chat");
                 MainUserView mainUserView = new MainUserView(user, objectOutputStream, objectInputStream);
                 mainUserView.showMenuUser();
 
             }
-            if (message.equals("Exit")) {
+            if (mes.equals("exit;")) {
                 log.info("User "+ user.getLogin()+" end chat");
                 closeConnection(socket);
                 System.exit(0);
             }
-            ous.writeUTF(message);
+            ous.writeUTF(String.valueOf(mes));
             ous.flush();
+
             System.out.println(ois.readUTF());
             i++;
         }
@@ -108,7 +117,6 @@ public class UserChatView {
             }
         }
         catch (Exception ex){
-            ex.printStackTrace();
         }
         return  socket;
     }
